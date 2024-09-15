@@ -13,7 +13,7 @@ import 'ace-builds/src-noconflict/theme-tomorrow';
 import 'ace-builds/src-noconflict/ext-language_tools';
 import { GlobalContext } from '../GlobalContext';
 
-function CodeSubmit({ question, expected_output }) {
+function CodeSubmit({question, expected_output}) {
     const { marks, updateMarks } = useContext(GlobalContext); // Use the context
 
     // Add state variables
@@ -31,12 +31,12 @@ function CodeSubmit({ question, expected_output }) {
     const [error, setError] = useState('');
     const [errorString, setErrorString] = useState('');
     const [submissionStatus, setSubmissionStatus] = useState(''); // Tracks the submission status
-
+  
     // Handler for code changes in the editor
     const handleCodeChange = (newCode) => {
         setCode(newCode);
     };
-
+    
     const handleSubmit = async () => {
         if (!code) {
             //setError('Please enter some code to submit.');
@@ -46,15 +46,15 @@ function CodeSubmit({ question, expected_output }) {
         setLoading(true);
         setResult('');
         setError('');
-
+   
         // Your Express server URL
         const API_URL = 'http://localhost:3000/api/submit';
-
+    
         // Replace with actual code and optional test cases
         //const code = code;  // Get this from AceEditor or user input
         const stdin = '3\n';                    // Optional input for test cases (stdin)
         //const expected_output = '7'; // Optional expected output for comparison
-
+    
         try {
             // Send the source code, stdin, and expected_output to the server
             const response = await axios.post(API_URL, {
@@ -62,25 +62,27 @@ function CodeSubmit({ question, expected_output }) {
                 stdin: stdin,  // Optional: Remove if not needed
                 expected_output: expected_output  // Optional: Remove if not needed
             });
-
+    
             // Extract the token from the response
-            const { token } = response.data;
-
+            const {token} = response.data;
+            
             // Start polling to get the result using the token
             pollForResult(token);
-
+    
             // // Display the token as the result
             //setResult(`Submission token: ${token}`);
         } catch (err) {
             console.error(`Critical Error: ${err.message} (${err.code})`);
             setError('An error occurred while submitting your code.');
-        } 
+        } finally {
+            setLoading(false);
+        }
     };
-
+    
     // Polling function to check the result using the token
     const pollForResult = (token) => {
         console.log(`polling ${token}`);
-
+        
         const API_RESULT_URL = `http://localhost:3000/api/result/${token}`;
 
         const intervalId = setInterval(async () => {
@@ -89,27 +91,26 @@ function CodeSubmit({ question, expected_output }) {
 
                 clearInterval(intervalId);
 
-                // Success case (status ID 3 - Accepted)
-                if (resultResponse.data.status.id === 3) {  // "Accepted"
-                    setResultMessage(`Success: ${resultResponse.data.stdout || "No output"}`);
-                    setIsError(false);
-                    showSuccessToast('Correct! Great Job!');
-
-                    updateMarks(question, 1);  // Assume 1 mark for correct answer
-                    setSubmissionStatus('accepted');
-                } else if (resultResponse.data.status.id === 4) {  // "Rejected"
-                    // Wrong Answer
-                    setResultMessage(resultResponse.data.stderr || resultResponse.data.compile_output || "Wrong Answer: Code runs fine but the answer is wrong");
-                    setIsError(true);
-                    showErrorToast('Wrong Answer!');
-                    setSubmissionStatus('rejected');
-                } else if (resultResponse.data.status.id > 4) {  // Error case (compile error, runtime error)
-                    setResultMessage(resultResponse.data.stderr || resultResponse.data.compile_output || "An error occurred.");
-                    setIsError(true);
-                    showErrorToast('Compilation or execution failed!');
-                    setSubmissionStatus('rejected');
-                }
-                setLoading(false);
+                    // Success case (status ID 3 - Accepted)
+                    if (resultResponse.data.status.id === 3) {  // "Accepted"
+                        setResultMessage(`Success: ${resultResponse.data.stdout || "No output"}`);
+                        setIsError(false);
+                        showSuccessToast('Correct! Great Job!');
+                        
+                        updateMarks(question, 1);  // Assume 1 mark for correct answer
+                        setSubmissionStatus('accepted');
+                    } else if (resultResponse.data.status.id === 4) {  // "Rejected"
+                        // Wrong Answer
+                        setResultMessage(resultResponse.data.stderr || resultResponse.data.compile_output || "Wrong Answer: Code runs fine but the answer is wrong");
+                        setIsError(true);
+                        showErrorToast('Wrong Answer!');
+                        setSubmissionStatus('rejected');
+                    } else if (resultResponse.data.status.id > 4) {  // Error case (compile error, runtime error)
+                        setResultMessage(resultResponse.data.stderr || resultResponse.data.compile_output || "An error occurred.");
+                        setIsError(true);
+                        showErrorToast('Compilation or execution failed!');
+                        setSubmissionStatus('rejected');
+                    }
             } catch (err) {
                 console.error('Error fetching result:', err);
                 setError('An error occurred while fetching the result.');
@@ -119,28 +120,28 @@ function CodeSubmit({ question, expected_output }) {
 
     const showSuccessToast = (msg) => {
         toast.success(msg || `Compiled Successfully!`, {
-            position: "top-right",
-            autoClose: 1000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
+          position: "top-right",
+          autoClose: 2000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
         });
-    };
-    const showErrorToast = (msg) => {
+      };
+      const showErrorToast = (msg) => {
         toast.error(msg || `Something went wrong! Please try again.`, {
-            position: "top-right",
-            autoClose: 1000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
+          position: "top-right",
+          autoClose: 2000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
         });
-    };
-
-    // Function to toggle the hint modal visibility
+      };
+      
+      // Function to toggle the hint modal visibility
     const toggleHintModal = () => {
         setIsHintOpen(!isHintOpen);
     };
@@ -206,8 +207,8 @@ function CodeSubmit({ question, expected_output }) {
             </button>
             {error && (
                 <div style={{ marginTop: '20px', color: 'red' }}>
-                    <h3>Error:</h3>
-                    <pre>{error}</pre>
+                <h3>Error:</h3>
+                <pre>{error}</pre>
                 </div>
             )}
             {/* {result && (
