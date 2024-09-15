@@ -1,0 +1,54 @@
+{
+    "questions": [
+        {
+            "id": 1,
+            "description": "# Question 1\n\nWrite code to print the following exactly as shown:\n\n```\nHello, World!\n```",
+            "expected_output": "Hello World"
+        },
+        {
+            "id": 2,
+            "description": "# Question 2\n\nCalculate the sum of 8 and 15.\n\nType your final answer below:",
+            "expected_output": "23"
+        },
+        {
+            "id": 3,
+            "description": "# Question 3\n\nSubtract 45 from 100.\n\nType your final answer below:",
+            "expected_output": "55"
+        },
+        {
+            "id": 4,
+            "description": "# Question 4\n\nMultiply 7 by 6.\n\nType your final answer below:",
+            "expected_output": "42"
+        },
+        {
+            "id": 5,
+            "description": "# Question 5\n\nDivide 100 by 4.\n\nType your final answer below:",
+            "expected_output": "25.0"
+        },
+        {
+            "id": 6,
+            "description": "# Question 6\n\nFind the remainder when 29 is divided by 5.\n\nType your final answer below:",
+            "expected_output": "4"
+        },
+        {
+            "id": 7,
+            "description": "# Question 7\n\nConcatenate the strings 'Hello' and 'World' with a space in between.\n\nType your final answer below:",
+            "expected_output": "Hello World"
+        },
+        {
+            "id": 8,
+            "description": "# Question 8\n\nFind the length of the string 'Programming'.\n\nType your final answer below:",
+            "expected_output": "11"
+        },
+        {
+            "id": 9,
+            "description": "# Question 9\n\nConvert the string '1234' to an integer.\n\nType your final answer below:",
+            "expected_output": "1234"
+        },
+        {
+            "id": 10,
+            "description": "# Question 10\n\nFind the uppercase version of the string 'example'.\n\nType your final answer below:",
+            "expected_output": "EXAMPLE"
+        }
+    ]
+}
